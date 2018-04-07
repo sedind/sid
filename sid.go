@@ -43,7 +43,7 @@ func New(d *Dispatcher) *Identity {
 }
 
 // Handle - Callback method that can be called only once for given state
-func (d *Dispatcher) Handle(state string, code string) (*User, *oauth2.Token, error) {
+func (d *Dispatcher) Handle(state string, code string) (*models.User, *oauth2.Token, error) {
 	d.RLock()
 	identity, ok := d.identities[state]
 	d.RUnlock()
@@ -68,9 +68,6 @@ type Identity struct {
 	Token  *oauth2.Token
 }
 
-// CallbackFunc describes callback function definition
-type CallbackFunc func(client *http.Client, u *models.User)
-
 func init() {
 	drivers.InitializeDrivers(RegisterNewDriver)
 }
@@ -86,18 +83,18 @@ var (
 	endpointMap = map[string]oauth2.Endpoint{}
 
 	//Map custom callbacks
-	callbackMap = map[string]CallbackFunc{}
+	callbackMap = map[string]func(client *http.Client, u *models.User){}
 	//Default scopes for each driver
 	defaultScopesMap = map[string][]string{}
 )
 
 // RegisterNewDriver adds a new driver
-func RegisterNewDriver(driver string, defaultScopes []string, callback CallbackFunc, endpoint oauth2.Endpoint, apimap map[string]string, usermap map[string]string) {
+func RegisterNewDriver(driver string, defaultscopes []string, callback func(client *http.Client, u *models.User), endpoint oauth2.Endpoint, apimap, usermap map[string]string) {
 	apiMap[driver] = apimap
 	userMap[driver] = usermap
 	endpointMap[driver] = endpoint
 	callbackMap[driver] = callback
-	defaultScopesMap[driver] = defaultScopes
+	defaultScopesMap[driver] = defaultscopes
 }
 
 // Driver gets identity object for a given driver

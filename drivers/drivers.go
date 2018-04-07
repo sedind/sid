@@ -12,17 +12,14 @@ var (
 	initAPIMap           = map[string]map[string]string{}
 	initUserMap          = map[string]map[string]string{}
 	initEndpointMap      = map[string]oauth2.Endpoint{}
-	initCallbackMap      = map[string]CallbackFunc{}
+	initCallbackMap      = map[string]func(client *http.Client, u *models.User){}
 	initDefaultScopesMap = map[string][]string{}
 )
-
-// CallbackFunc describes callback function definition
-type CallbackFunc func(client *http.Client, u *models.User)
 
 // RegisterDriverFunc describes driver registraction function definition
 type RegisterDriverFunc func(driver string, defaultscopes []string, callback func(client *http.Client, u *models.User), endpoint oauth2.Endpoint, apimap, usermap map[string]string)
 
-func registerDriver(driver string, defaultscopes []string, callback CallbackFunc, endpoint oauth2.Endpoint, apimap, usermap map[string]string) {
+func registerDriver(driver string, defaultscopes []string, callback func(client *http.Client, u *models.User), endpoint oauth2.Endpoint, apimap, usermap map[string]string) {
 	initAPIMap[driver] = apimap
 	initUserMap[driver] = usermap
 	initEndpointMap[driver] = endpoint
