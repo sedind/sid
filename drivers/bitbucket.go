@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/danilopolani/gocialite/structs"
+	"github.com/sedind/sid/models"
 	"golang.org/x/oauth2/bitbucket"
 )
 
@@ -29,7 +29,7 @@ var BitbucketAPIMap = map[string]string{
 }
 
 // BitbucketUserFn is a callback to parse additional fields for User
-var BitbucketUserFn = func(client *http.Client, u *structs.User) {
+var BitbucketUserFn = func(client *http.Client, u *models.User) {
 	// Set avatar
 	u.Avatar = u.Raw["links"].(map[string]interface{})["avatar"].(map[string]interface{})["href"].(string)
 

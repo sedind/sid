@@ -1,6 +1,7 @@
 package drivers
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/sedind/sid/models"
@@ -34,4 +35,18 @@ func InitializeDrivers(register RegisterDriverFunc) {
 	for k := range initAPIMap {
 		register(k, initDefaultScopesMap[k], initCallbackMap[k], initEndpointMap[k], initAPIMap[k], initUserMap[k])
 	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Utility Methods
+////////////////////////////////////////////////////////////////////////////////
+
+// Decode a json or return an error
+func jsonDecode(js []byte) (map[string]interface{}, error) {
+	var decoded map[string]interface{}
+	if err := json.Unmarshal(js, &decoded); err != nil {
+		return nil, err
+	}
+
+	return decoded, nil
 }
